@@ -1,8 +1,8 @@
-"""VARCHAR added on cep field and admin add
+"""new change
 
-Revision ID: a80743683798
+Revision ID: 8ce45517d9ed
 Revises: 
-Create Date: 2026-04-17 16:37:56.205231
+Create Date: 2026-04-18 23:56:41.767864
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a80743683798'
+revision: str = '8ce45517d9ed'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -44,7 +44,6 @@ def upgrade() -> None:
     op.create_table('users',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('cep', sa.VARCHAR(), nullable=True),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),

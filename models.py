@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Integer, Boolean, String, Column,Float,For
 from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils.types import ChoiceType
 
+
 # DB connection created
 db = create_engine("sqlite:///banco.db") #inside the () is the name of DB
 
@@ -15,20 +16,20 @@ class User(Base):
     #Columns configs
     id = Column("id", Integer, primary_key=True, autoincrement = True)
     name = Column("name", String)
-    cep = Column("cep", VARCHAR)
+    #cep = Column("cep", VARCHAR)
     email = Column("email", String, nullable=False)
     password = Column("password", String)
     active = Column("active", Boolean)
     admin = Column("admin", Boolean, default=False)
 
     # Constructor method in Python class.
-    def __init__(self, name, email, password, cep, active= True, admin= False):
+    def __init__(self, name, email, password, active= True, admin= False):
         self.name = name
         self.email = email
         self.password = password
         self.active = active
         self.admin = admin
-        self.cep = cep
+        #self.cep = cep
 
 
 
