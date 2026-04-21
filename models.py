@@ -16,8 +16,7 @@ class User(Base):
     #Columns configs
     id = Column("id", Integer, primary_key=True, autoincrement = True)
     name = Column("name", String)
-    #cep = Column("cep", VARCHAR)
-    email = Column("email", String, nullable=False)
+    email = Column("email", String, nullable=False, unique=True)
     password = Column("password", String)
     active = Column("active", Boolean)
     admin = Column("admin", Boolean, default=False)
@@ -29,12 +28,11 @@ class User(Base):
         self.password = password
         self.active = active
         self.admin = admin
-        #self.cep = cep
 
 
 
 class Order(Base):
-    __tablename__ = "orders"
+    __tablename__ = "order"
 
     #List of tuples OR tuple of tuples
     # ORDERS_STATUS_CHOICES = (
@@ -46,27 +44,27 @@ class Order(Base):
 
     id = Column("id", Integer, primary_key= True, autoincrement = True)
     status = Column("status", String) #Related to the tuples, just the three choices are possible
-    user = Column("user", ForeignKey("users.id")) #Reference to the users table
+    user = Column("user", ForeignKey("users.id")) #Reference to the users table > each order belongs to an ID
     price = Column("price", Float)
-    items = Column("items", ForeignKey("order_items.id")) #Reference to the order_items table
+    #items = Column("items", ForeignKey("order_items.id")) #Reference to the orders_items table > 1:N > each user could have many orders
 
 
-    def __init__(self, user, items, status="PENDING", price=0):
+    def __init__(self, user, status="PENDING", price=0):
         self.user = user
         self.status = status
         self.price = price
-        self.items = items
+        #self.items = items
 
 
-class OrderItem(Base):
-    __tablename__ = "order_items"
+class OrdersItem(Base):
+    __tablename__ = "order_item"
 
     id = Column("id", Integer, primary_key= True, autoincrement = True)
     quantity = Column("quantity", Integer)
     flavor = Column("flavor", String) #Could use ChoiceType
     size = Column("size", String) #Could use ChoiceType
     unit_price = Column("unit_price", Float)
-    order = Column("order", ForeignKey("orders.id")) # Reference to orders table
+    order = Column("order", ForeignKey("order.id")) # Reference to orders table
 
     def __init__(self, quantity, flavor, size, unit_price, order):
         self.quantity = quantity
