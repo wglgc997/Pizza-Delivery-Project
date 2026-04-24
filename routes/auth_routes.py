@@ -1,17 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sympy import false
-
 from models import User,db
 from dependencies import take_session
-from main import bcrypt_context
+from main import bcrypt_context, ALGORITHM, ACCESS_TOKEN_EXPIRED_MINUTES, SECRET_KEY
 from schemas import SchemaUser, SchemaLogin
 from sqlalchemy.orm import Session
+from jose import jwt, JWTError
+from datetime import datetime, timedelta, timezone
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 def create_token(user_id):
-    token = f"893dskjdksjd239030 {user_id}"
-    return token
+    expiration_date = datetime.now(timezone.utc) + timedelta(minutes = ACCESS_TOKEN_EXPIRED_MINUTES) # Actual time + 30m
+    dic_info = {"sub": user_id,"exp": expiration_date} # Infos are codify via JWT
+    jwt_encode = jwt.encode(dic_info, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt_encode
 
 def user_auth(email, password, session):
     user = session.query(User).filter(User.email == email).first()
@@ -49,9 +52,7 @@ async def account_creation(schema_user:SchemaUser, session:Session = Depends(tak
         session.commit() # After changes make in the opened session, changes are saved in DB
         return {"message": f"Account {schema_user.email} has been created"}
 
-
 #login > email and password > token JWT
-
 @auth_router.post("/login")
 async def login(schema_login: SchemaLogin, session: Session = Depends(take_session)): # DB instance
     user = user_auth(schema_login.email, schema_login.password, session)

@@ -7,7 +7,8 @@ import os
 load_dotenv() #Load the .env file
 
 SECRET_KEY = os.getenv("SECRET_KEY") # Search the secret key in .env and load it.
-ALGORITHM = os.getenv("ALGORITHM")
+ALGORITHM = os.getenv("ALGORITHM") # Search the info  in .env and load it.
+ACCESS_TOKEN_EXPIRED_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRED_MINUTES")) # Search the info in .env and load it.
 
 # Set up the FastAPI class.
 app = FastAPI()
