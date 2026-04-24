@@ -60,7 +60,7 @@ async def login(schema_login: SchemaLogin, session: Session = Depends(take_sessi
     else:
         # Create the token for the user
         access_token = create_token(user.id) # Return the created token
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer"} # 30-90 minutes of duration
 
 
 

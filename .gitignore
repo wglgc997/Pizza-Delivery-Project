@@ -1,7 +1,6 @@
 .git/info/exclude
 
 # Environment
-.env
 .venv/
 venv/
 

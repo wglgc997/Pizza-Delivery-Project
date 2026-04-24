@@ -1,4 +1,5 @@
 from fastapi import FastAPI ## Importing FastAPI library.
+from networkx.algorithms.tree.mst import ALGORITHMS
 from passlib.context import CryptContext # Used to crypt the passwords
 from dotenv import load_dotenv # Load and read the env variables on the code
 import os
@@ -6,6 +7,7 @@ import os
 load_dotenv() #Load the .env file
 
 SECRET_KEY = os.getenv("SECRET_KEY") # Search the secret key in .env and load it.
+ALGORITHM = os.getenv("ALGORITHM")
 
 # Set up the FastAPI class.
 app = FastAPI()
