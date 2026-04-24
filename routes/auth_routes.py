@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sympy import false
+
 from models import User,db
 from dependencies import take_session
 from main import bcrypt_context
@@ -10,6 +12,15 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 def create_token(user_id):
     token = f"893dskjdksjd239030 {user_id}"
     return token
+
+def user_auth(email, password, session):
+    user = session.query(User).filter(User.email == email).first()
+    if not user:
+        return false
+    elif not bcrypt_context.verify(password, user.password): # Compare hashes
+        return false
+    else:
+        return user
 
 @auth_router.get("/")
 async def home():
@@ -43,13 +54,15 @@ async def account_creation(schema_user:SchemaUser, session:Session = Depends(tak
 
 @auth_router.post("/login")
 async def login(schema_login: SchemaLogin, session: Session = Depends(take_session)): # DB instance
-    user = session.query(User).filter(User.email == schema_login.email).first()
+    user = user_auth(schema_login.email, schema_login.password, session)
     if not user:
         raise HTTPException(status_code=400, detail= "Incorrect email or password")
     else:
         # Create the token for the user
         access_token = create_token(user.id) # Return the created token
         return {"access_token": access_token, "token_type": "bearer"}
+
+
 
 
 
