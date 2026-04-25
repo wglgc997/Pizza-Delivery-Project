@@ -10,11 +10,17 @@ from datetime import datetime, timedelta, timezone
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
-def create_token(user_id):
-    expiration_date = datetime.now(timezone.utc) + timedelta(minutes = ACCESS_TOKEN_EXPIRED_MINUTES) # Actual time + 30m
+def create_token(user_id, token_duration=timedelta(minutes=ACCESS_TOKEN_EXPIRED_MINUTES)):
+    expiration_date = datetime.now(timezone.utc) + token_duration # Actual time + 30m
     dic_info = {"sub": user_id,"exp": expiration_date} # Infos are codify via JWT
     jwt_encode = jwt.encode(dic_info, SECRET_KEY, algorithm=ALGORITHM)
     return jwt_encode
+
+def check_token(token, session: Session = Depends(take_session)):
+    # verify if token is valid
+    # extract the ID from user token
+    user = session.query(User).filter(User.id == 1).first()
+    return user
 
 def user_auth(email, password, session):
     user = session.query(User).filter(User.email == email).first()
@@ -26,13 +32,13 @@ def user_auth(email, password, session):
         return user
 
 @auth_router.get("/")
-async def home():
-    """
-    Authentication route for the system.
-    """
-    return {"message": "Authenticated"}
+    async def home():
+        """
+        Authentication route for the system.
+        """
+        return {"message": "Authenticated"}
 
-@auth_router.post("/account_creation")
+    @auth_router.post("/account_creation")
 async def account_creation(schema_user:SchemaUser, session:Session = Depends(take_session)):
     """
     Create a new account for the system.
@@ -60,8 +66,20 @@ async def login(schema_login: SchemaLogin, session: Session = Depends(take_sessi
         raise HTTPException(status_code=400, detail= "Incorrect email or password")
     else:
         # Create the token for the user
-        access_token = create_token(user.id) # Return the created token
-        return {"access_token": access_token, "token_type": "bearer"} # 30-90 minutes of duration
+        access_token = create_token(user.id) # Return the created token # 30 minutes of duration
+        refresh_token = create_token(user.id, token_duration=timedelta(days=7)) # Refresh in 7 days. After 7 days, new login is required
+        return {"access_token": access_token,
+                "refresh_token": refresh_token,
+                "token_type": "bearer"}
+
+
+@auth_router.get("/refresh")
+async def use_refresh_token(token):
+    #Verify the token
+    user = check_token(token)
+    access_token = create_token(user.id)
+    return {"access_token": access_token,
+            "token_type": "bearer"}
 
 
 
