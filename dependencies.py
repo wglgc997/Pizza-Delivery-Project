@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 def take_session():
-    """Open and close a DB a session"""
+    """Open and close a DB session"""
     try:
         # Open session > use > commit/rollback > close the session
         Session = sessionmaker(bind=db)
@@ -21,7 +21,7 @@ def take_session():
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login_form")
 
 def check_token(token: str = Depends(oauth2_scheme), session: Session = Depends(take_session)):
-    """# Dependency for just auth user could access"""
+    """ Dependency that allow just auth user could access"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Decode the token
         user_id = payload.get("sub") # Extract the user ID/sub of the user in the token

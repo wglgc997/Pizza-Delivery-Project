@@ -1,7 +1,7 @@
-from fastapi import FastAPI ## Importing FastAPI library.
+from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext # Used to crypt the passwords
-from dotenv import load_dotenv # Load and read the env variables on the code
+from passlib.context import CryptContext
+from dotenv import load_dotenv
 import os
 
 load_dotenv() #Load the variables from .env file

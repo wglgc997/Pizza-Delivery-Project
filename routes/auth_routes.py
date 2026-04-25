@@ -12,12 +12,14 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 # Functions
 def create_token(user_id, token_duration=timedelta(minutes=ACCESS_TOKEN_EXPIRED_MINUTES)):
+    """Create a new access token"""
     expiration_date = datetime.now(timezone.utc) + token_duration # Actual time + 30m
     dic_info = {"sub": user_id,"exp": expiration_date} # Infos are codify via JWT
     jwt_encode = jwt.encode(dic_info, SECRET_KEY, algorithm=ALGORITHM)
     return jwt_encode
 
 def user_auth(email, password, session):
+    """Authenticate a user"""
     user = session.query(User).filter(User.email == email).first()
     if not user:
         return false
