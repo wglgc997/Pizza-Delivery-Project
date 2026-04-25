@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 
-
 class SchemaUser(BaseModel):
     name:str
     email: str
@@ -17,8 +16,8 @@ class SchemaOrder(BaseModel):
     user_id: int
 
     class Config:
-        from_attributes = True
-
+        from_attributes = True # allows a model to be initialized from an arbitrary class instance
+        
 class SchemaLogin(BaseModel):
     email: str
     password: str
