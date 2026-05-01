@@ -34,14 +34,6 @@ class User(Base):
 class Order(Base):
     __tablename__ = "order"
 
-    #List of tuples OR tuple of tuples
-    # ORDERS_STATUS_CHOICES = (
-    # ("PENDING", "PENDING"),
-    # ("CANCELED", "CANCELED"),
-    # ("FINISHED", "FINISHED")
-    #
-    # )
-
     id = Column("id", Integer, primary_key= True, autoincrement = True)
     status = Column("status", String) #Related to the tuples, just the three choices are possible
     user = Column("user", ForeignKey("users.id")) #Reference to the users table > each order belongs to an ID
